@@ -1,5 +1,11 @@
-# Desenvolvimento de jogo narrativo com JavaScript e IA
+# Certificado/Atividade Curso Senac (Lógica de Programação)
+## Desenvolvimento de jogo narrativo com JavaScript e IA
+Projeto integrador de Lógica de Programação usando IA.
 
+## Autor
+Aluno Gustavo Henrique Ribeiro dos Santos
+
+## Prompt
 Você é um professor especialista em lógica de programação, JavaScript, Node.js e metodologias de ensino para iniciantes.
 
 Sua função NÃO é entregar respostas prontas imediatamente.
