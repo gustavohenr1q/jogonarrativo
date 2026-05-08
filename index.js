@@ -2,31 +2,88 @@ const prompt = require('prompt-sync')();
 require('colors');
 
 // ========================
-// ASCII ART
+// UTILIDADES
+// ========================
+function limpar() {
+  console.clear();
+}
+
+function pausar() {
+  prompt('\nPressione ENTER para voltar ao menu...');
+}
+
+function linha(tamanho = 58) {
+  return '═'.repeat(tamanho);
+}
+
+function titulo(texto) {
+  console.log(`\n╔${linha()}╗`.cyan);
+  console.log(`║${texto.padStart((58 + texto.length) / 2).padEnd(58)}║`.cyan);
+  console.log(`╚${linha()}╝\n`.cyan);
+}
+
+// ========================
+// CONFIRMAR SAÍDA
+// ========================
+function confirmarSaida() {
+  console.log('\nTem certeza que deseja sair?'.yellow);
+  console.log('1 - Sim');
+  console.log('2 - Não\n');
+
+  const sair = prompt('> ');
+
+  if (sair === '1') {
+    menu();
+    return true;
+  }
+
+  return false;
+}
+
+// ========================
+// CARDS
+// ========================
+function tamanhoVisivel(texto) {
+  return texto
+    .replace(/\u001b\[[0-9;]*m/g, '')
+    .replace(/[\u{1F300}-\u{1FAFF}]/gu, '  ')
+    .length;
+}
+
+function ajustarTexto(texto, largura) {
+  const tamanho = tamanhoVisivel(texto);
+  return texto + ' '.repeat(Math.max(0, largura - tamanho));
+}
+
+function card(numero, emoji, nome, descricao, cor = 'white') {
+  const largura = 52;
+
+  const linha1 = ` ${numero}   ${emoji}  ${nome}`;
+  const linha2 = `     ${descricao}`;
+
+  console.log(`╭${'─'.repeat(largura)}╮`[cor]);
+  console.log(`│${ajustarTexto(linha1, largura)}│`[cor]);
+  console.log(`│${ajustarTexto(linha2, largura)}│`[cor]);
+  console.log(`╰${'─'.repeat(largura)}╯`[cor]);
+}
+
+// ========================
+// LOGO
 // ========================
 function logo() {
-  console.clear();
+  limpar();
 
-  const atividade = `
-     _   _   _       _     _           _          ____                                                                
-    / \\ | |_(_)_   _(_) __| | __ _  __| | ___    / ___|  ___ _ __   __ _  ___                                         
-   / _ \\| __| \\ \\ / / |/ _\` |/ _\` |/ _\` |/ _ \\   \\___ \\ / _ \\ '_ \\ / _\` |/ __|                                        
-  / ___ \\ |_| |\\ V /| | (_| | (_| | (_| |  __/    ___) |  __/ | | | (_| | (__                                         
- /_/   \\_\\__|_| \\_/ |_|\\__,_|\\__,_|\\__,_|\\___|   |____/ \\___|_| |_|\\__,_|\\___|                                        
-  ___           _              _                        _             __         _                        _           
- |_ _|_ __  ___| |_ _ __ _   _| |_ ___  _ __   _       | | ___  ___  /_/      __| | ___      __ _ ___ ___(_)___       
-  | || '_ \\/ __| __| '__| | | | __/ _ \\| '__| (_)   _  | |/ _ \\/ __|/ _ \\    / _\` |/ _ \\    / _\` / __/ __| / __|      
-  | || | | \\__ \\ |_| |  | |_| | || (_) | |     _   | |_| | (_) \\__ \\  __/   | (_| |  __/   | (_| \\__ \\__ \\ \\__ \\      
- |___|_| |_|___/\\__|_|   \\__,_|\\__\\___/|_|    (_)   \\___/ \\___/|___/\\___|    \\__,_|\\___|    \\__,_|___/___/_|___/      
-    / \\  | |_   _ _ __   ___    _    / ___|_   _ ___| |_ __ ___   _____     | | | | ___ _ __  _ __(_) __ _ _   _  ___ 
-   / _ \\ | | | | | '_ \\ / _ \\  (_)  | |  _| | | / __| __/ _\` \\ \\ / / _ \\    | |_| |/ _ \\ '_ \\| '__| |/ _\` | | | |/ _ \\
-  / ___ \\| | |_| | | | | (_) |  _   | |_| | |_| \\__ \\ || (_| |\\ V / (_) |   |  _  |  __/ | | | |  | | (_| | |_| |  __/
- /_/   \\_\\_|\\__,_|_| |_|\\___/  (_)   \\____|\\__,_|___/\\__\\__,_| \\_/ \\___/    |_| |_|\\___|_| |_|_|  |_|\\__, |\\__,_|\\___|
-                                                                                                        |_|           
-------------------------------------------------
-  `;
+  console.log(`
+   ██████╗ ██╗  ██╗███████╗     ██████╗  █████╗ ███╗   ███╗███████╗███████╗
+  ██╔════╝ ██║  ██║██╔════╝    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝██╔════╝
+  ██║  ███╗███████║███████╗    ██║  ███╗███████║██╔████╔██║█████╗  ███████╗
+  ██║   ██║██╔══██║╚════██║    ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ╚════██║
+  ╚██████╔╝██║  ██║███████║    ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗███████║
+   ╚═════╝ ╚═╝  ╚═╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝
+  `.cyan);
 
-  console.log(atividade.rainbow);
+  console.log('                  MENU PRINCIPAL DE JOGOS'.brightWhite);
+  console.log('              Escolha uma opção para começar\n'.gray);
 }
 
 // ========================
@@ -35,57 +92,124 @@ function logo() {
 function menu() {
   logo();
 
-  console.log('🎮 Escolha um jogo:\n'.yellow);
-  console.log('1 - 🧠 Code Breaker');
-  console.log('2 - ⚔️ Arena de Combate');
-  console.log('3 - 🎲 Sorte & Azar');
-  console.log('4 - 🚪 Mini Aventura');
-  console.log('0 - Sair\n');
+  card('1', '🧠', 'Code Breaker', 'Descubra o código secreto', 'cyan');
+  card('2', '⚔️', 'Arena de Combate', 'Batalhe contra um inimigo', 'red');
+  card('3', '💎', 'Caça ao Tesouro', 'Abra baús e fuja das armadilhas', 'yellow');
+  card('4', '🚪', 'Mini Aventura', 'Escolha portas e sobreviva', 'green');
+  card('0', '❌', 'Sair', 'Encerrar o programa', 'gray');
 
-  let op = prompt('> ');
+  const op = prompt('\nEscolha uma opção: '.brightWhite);
 
-  if (op === '1') codeBreaker();
-  else if (op === '2') arena();
-  else if (op === '3') sorteAzar();
-  else if (op === '4') aventura();
-  else if (op === '0') process.exit();
-  else menu();
+  switch (op) {
+    case '1':
+      codeBreaker();
+      break;
+
+    case '2':
+      arena();
+      break;
+
+    case '3':
+      cacaTesouro();
+      break;
+
+    case '4':
+      aventura();
+      break;
+
+    case '0':
+      console.log('\nTem certeza que deseja encerrar o programa?'.yellow);
+      console.log('1 - Sim');
+      console.log('2 - Não\n');
+
+      const sair = prompt('> ');
+
+      if (sair === '1') {
+        limpar();
+        console.log('Até a próxima! 👋'.cyan);
+        process.exit();
+      }
+
+      menu();
+      break;
+
+    default:
+      console.log('\nOpção inválida!'.red);
+      pausar();
+      menu();
+  }
 }
 
 // ========================
 // JOGO 1
 // ========================
 function codeBreaker() {
-  console.clear();
-  console.log('🧠 CODE BREAKER\n'.cyan);
+  limpar();
+  titulo('🧠 CODE BREAKER');
 
-  const letras = ['A','B','C','D'];
-  let codigo = Array.from({length:3}, () => letras[Math.floor(Math.random()*4)]);
+  const letras = ['A', 'B', 'C', 'D'];
+
+  const codigo = Array.from(
+    { length: 3 },
+    () => letras[Math.floor(Math.random() * letras.length)]
+  );
+
   let tentativas = 5;
 
+  console.log('Descubra o código secreto usando A, B, C e D.'.gray);
+  console.log('IMPORTANTE: digite as letras separadas por espaço.'.yellow);
+  console.log('Exemplo correto: A B C'.green);
+  console.log('Exemplo errado: ABC, CBA ou ADCB'.red);
+  console.log('\nDigite 0 para sair do jogo.\n'.gray);
+
   while (tentativas > 0) {
-    console.log(`Tentativas: ${tentativas}`);
-    let palpite = prompt('Digite (A B C): ').toUpperCase().split(' ');
+    console.log(`Tentativas restantes: ${tentativas}`.yellow);
 
-    let resultado = [];
+    const entrada = prompt('Digite seu palpite: ')
+      .toUpperCase()
+      .trim();
 
-    for (let i = 0; i < 3; i++) {
-      if (palpite[i] === codigo[i]) resultado.push('✅');
-      else if (codigo.includes(palpite[i])) resultado.push('🔄');
-      else resultado.push('❌');
+    if (entrada === '0') {
+      if (confirmarSaida()) return;
+      continue;
     }
 
-    console.log(resultado.join(' '));
+    const palpite = entrada.split(' ');
+
+    if (
+      palpite.length !== 3 ||
+      palpite.some(letra => !letras.includes(letra))
+    ) {
+      console.log('\nDigite exatamente 3 letras separadas por espaço. Exemplo: A B C\n'.red);
+      continue;
+    }
+
+    const resultado = [];
+
+    for (let i = 0; i < 3; i++) {
+      if (palpite[i] === codigo[i]) {
+        resultado.push('✅');
+      } else if (codigo.includes(palpite[i])) {
+        resultado.push('🔄');
+      } else {
+        resultado.push('❌');
+      }
+    }
+
+    console.log(`Resultado: ${resultado.join(' ')}\n`);
 
     if (resultado.every(r => r === '✅')) {
-      console.log('🎉 Vitória!'.green);
-      break;
+      console.log('🎉 Você venceu!'.green);
+      pausar();
+      return menu();
     }
 
     tentativas--;
   }
 
-  prompt('\nENTER...');
+  console.log(`💀 Você perdeu! Código era: ${codigo.join(' ')}`.red);
+
+  pausar();
   menu();
 }
 
@@ -93,64 +217,150 @@ function codeBreaker() {
 // JOGO 2
 // ========================
 function arena() {
-  console.clear();
-  console.log('⚔️ ARENA\n'.red);
+  limpar();
+  titulo('⚔️ ARENA DE COMBATE');
 
-  let vida = 5;
-  let inimigo = 5;
+  let vida = 10;
+  let inimigo = 10;
+  let especialUsado = false;
 
   while (vida > 0 && inimigo > 0) {
-    console.log(`Você: ${vida} | Inimigo: ${inimigo}`);
+    console.log(`❤️ Você: ${vida} | 👹 Inimigo: ${inimigo}\n`.brightWhite);
 
-    console.log('1 - Atacar');
-    console.log('2 - Defender');
-    console.log('3 - Especial\n');
+    console.log('1 - Atacar'.cyan);
+    console.log('2 - Defender'.cyan);
+    console.log('3 - Especial'.magenta);
+    console.log('0 - Sair do jogo'.gray);
 
-    let op = prompt('> ');
+    const op = prompt('\nEscolha sua ação: ');
 
-    if (op === '1') inimigo--;
-    else if (op === '2') console.log('Defendeu!');
-    else if (op === '3' && Math.random() < 0.5) {
-      console.log('Crítico!');
-      inimigo -= 2;
+    if (op === '0') {
+      if (confirmarSaida()) return;
+      continue;
     }
 
-    if (Math.random() < 0.7) vida--;
+    let defendendo = false;
+
+    if (op === '1') {
+      const dano = Math.floor(Math.random() * 3) + 1;
+      inimigo -= dano;
+      console.log(`\n⚔️ Você causou ${dano} de dano!\n`.green);
+    } else if (op === '2') {
+      defendendo = true;
+      console.log('\n🛡️ Você se defendeu!\n'.yellow);
+    } else if (op === '3') {
+      if (especialUsado) {
+        console.log('\n❌ Especial já utilizado!\n'.red);
+      } else {
+        const dano = Math.floor(Math.random() * 6) + 3;
+        inimigo -= dano;
+        especialUsado = true;
+        console.log(`\n🔥 ATAQUE CRÍTICO! ${dano} de dano!\n`.magenta);
+      }
+    } else {
+      console.log('\n❌ Opção inválida!\n'.red);
+      continue;
+    }
+
+    if (inimigo <= 0) break;
+
+    const danoInimigo = defendendo
+      ? 1
+      : Math.floor(Math.random() * 3) + 1;
+
+    vida -= danoInimigo;
+
+    console.log(`👹 O inimigo causou ${danoInimigo} de dano!\n`.red);
   }
 
-  console.log(vida > 0 ? '🏆 Vitória!' : '💀 Derrota');
+  console.log(
+    vida > 0
+      ? '\n🏆 Você venceu a batalha!'.green
+      : '\n💀 Você foi derrotado!'.red
+  );
 
-  prompt('\nENTER...');
+  pausar();
   menu();
 }
 
 // ========================
 // JOGO 3
 // ========================
-function sorteAzar() {
-  console.clear();
-  console.log('🎲 SORTE & AZAR\n'.yellow);
+function cacaTesouro() {
+  limpar();
+  titulo('💎 CAÇA AO TESOURO');
 
-  let saldo = 10;
+  let moedas = 0;
+  let rodadas = 1;
+  const maxRodadas = 6;
 
-  while (saldo > 0) {
-    console.log(`Saldo: ${saldo}`);
-    console.log('1 - Jogar');
-    console.log('0 - Sair\n');
+  console.log('Abra baús e tente ficar rico.'.gray);
+  console.log('Mas cuidado com as armadilhas!\n'.gray);
 
-    let op = prompt('> ');
+  while (rodadas <= maxRodadas) {
+    console.log(`🏁 Rodada: ${rodadas}/${maxRodadas}`.cyan);
+    console.log(`💰 Moedas: ${moedas}\n`.yellow);
 
-    if (op === '0') break;
+    console.log('1 - Baú Antigo'.green);
+    console.log('2 - Baú Dourado'.yellow);
+    console.log('3 - Baú Sombrio'.magenta);
+    console.log('0 - Sair do jogo'.gray);
 
-    let r = Math.random();
+    const op = prompt('\nEscolha um baú: ');
 
-    if (r < 0.3) saldo += 5;
-    else if (r < 0.6) saldo -= 3;
+    if (op === '0') {
+      if (confirmarSaida()) return;
+      continue;
+    }
 
-    console.log(`Novo saldo: ${saldo}`);
+    if (!['1', '2', '3'].includes(op)) {
+      console.log('\n❌ Opção inválida!\n'.red);
+      continue;
+    }
+
+    const evento = Math.random();
+
+    if (evento < 0.25) {
+      const perda = Math.min(
+        moedas,
+        Math.floor(Math.random() * 6) + 3
+      );
+
+      moedas -= perda;
+
+      console.log(`\n💀 Armadilha! Você perdeu ${perda} moedas.\n`.red);
+    } else if (evento < 0.55) {
+      const ganho = Math.floor(Math.random() * 6) + 4;
+
+      moedas += ganho;
+
+      console.log(`\n💎 Você encontrou ${ganho} moedas!\n`.green);
+    } else if (evento < 0.8) {
+      const ganho = Math.floor(Math.random() * 10) + 8;
+
+      moedas += ganho;
+
+      console.log(`\n👑 Tesouro raro! +${ganho} moedas!\n`.yellow);
+    } else {
+      moedas *= 2;
+
+      console.log('\n🔥 RELÍQUIA LENDÁRIA! Suas moedas dobraram!\n'.magenta);
+    }
+
+    if (moedas >= 25) {
+      console.log('\n🏆 Você ficou rico e venceu!\n'.green);
+      pausar();
+      return menu();
+    }
+
+    rodadas++;
   }
 
-  prompt('\nENTER...');
+  if (moedas < 25) {
+    console.log(`\n💀 Você terminou com apenas ${moedas} moedas.\n`.red);
+  }
+
+  pausar();
   menu();
 }
 
@@ -158,34 +368,62 @@ function sorteAzar() {
 // JOGO 4
 // ========================
 function aventura() {
-  console.clear();
-  console.log('🏰 AVENTURA\n'.green);
+  limpar();
+  titulo('🚪 MINI AVENTURA');
 
   let vida = 3;
+  let salas = 0;
 
   while (vida > 0) {
-    console.log(`Vida: ${vida}`);
-    console.log('1 - Porta esquerda');
-    console.log('2 - Porta direita');
-    console.log('0 - Sair\n');
+    console.log(`❤️ Vida: ${vida} | 🏰 Salas: ${salas}\n`.brightWhite);
 
-    let op = prompt('> ');
+    console.log('1 - Porta esquerda'.cyan);
+    console.log('2 - Porta direita'.cyan);
+    console.log('3 - Porta misteriosa'.magenta);
+    console.log('0 - Sair do jogo'.gray);
 
-    if (op === '0') break;
+    const op = prompt('\nEscolha uma porta: ');
 
-    if (Math.random() < 0.5) {
-      console.log('😈 Armadilha!');
+    if (op === '0') {
+      if (confirmarSaida()) return;
+      continue;
+    }
+
+    if (!['1', '2', '3'].includes(op)) {
+      console.log('\n❌ Opção inválida!\n'.red);
+      continue;
+    }
+
+    const evento = Math.random();
+
+    if (evento < 0.35) {
       vida--;
+      console.log('\n😈 Armadilha! Você perdeu 1 vida.\n'.red);
+    } else if (evento < 0.65) {
+      salas++;
+      console.log('\n✨ Caminho seguro!'.green);
     } else {
-      console.log('✨ Seguro!');
+      vida++;
+      salas++;
+      console.log('\n💖 Você encontrou uma poção!\n'.yellow);
+    }
+
+    if (salas >= 5) {
+      console.log('\n🏆 Você escapou da dungeon!\n'.green);
+      pausar();
+      return menu();
     }
   }
 
-  console.log(vida > 0 ? 'Você escapou!' : '💀 Morreu');
+  if (vida <= 0) {
+    console.log('\n💀 Você morreu na aventura!\n'.red);
+  }
 
-  prompt('\nENTER...');
+  pausar();
   menu();
 }
 
+// ========================
+// INICIAR
 // ========================
 menu();
