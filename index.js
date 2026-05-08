@@ -93,10 +93,10 @@ function menu() {
   logo();
 
   card('1', '🧠', 'Code Breaker', 'Descubra o código secreto', 'cyan');
-  card('2', '⚔️', 'Arena de Combate', 'Batalhe contra um inimigo', 'red');
+  card('2', '⚔️ㅤ', 'Arena de Combate', 'Batalhe contra um inimigo', 'red');
   card('3', '💎', 'Caça ao Tesouro', 'Abra baús e fuja das armadilhas', 'yellow');
   card('4', '🚪', 'Mini Aventura', 'Escolha portas e sobreviva', 'green');
-  card('0', '❌', 'Sair', 'Encerrar o programa', 'gray');
+  console.log('\nㅤㅤㅤㅤㅤㅤㅤDigite 0 para sair do jogo.\n'.gray);
 
   const op = prompt('\nEscolha uma opção: '.brightWhite);
 
